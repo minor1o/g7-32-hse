@@ -9,3 +9,5 @@
 #let default-enum-spacing = 1em
 #let default-outline-depth = 3
 #let default-heading-margin = (below: 2em, above: 2em)
+
+#let is-hse = state("is-hse", false)

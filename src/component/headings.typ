@@ -1,8 +1,9 @@
-#import "../constants.typ": default-heading-margin
+#import "../constants.typ": default-heading-margin, is-hse
 
 #let structural-heading-titles = (
   performers: [Список исполнителей],
   abstract: [Реферат],
+  abstract-en: [Abstract],
   contents: [Содержание],
   terms: [Термины и определения],
   abbreviations: [Перечень сокращений и обозначений],
@@ -52,5 +53,23 @@
 
   show heading: set block(..default-heading-margin)
 
+  body
+}
+
+#let abbreviations(body) = {
+  structure-heading(structural-heading-titles.abbreviations)
+  context [В настоящем отчете о #if is-hse.get() [ВКР] else [НИР] применяют следующие сокращения и обозначения]
+
+  set par(first-line-indent: 0pt)
+  show std.terms: set std.terms(separator: [ — ], hanging-indent: 0pt, indent: 0pt)
+  body
+}
+
+#let terms(body) = {
+  structure-heading(structural-heading-titles.terms)
+  context [В настоящем отчете о #if is-hse.get() [ВКР] else [НИР] применяют следующие термины с соответствующими определениями]
+
+  set par(first-line-indent: 0pt)
+  show std.terms: set std.terms(separator: [ — ], hanging-indent: 0pt, indent: 0pt)
   body
 }

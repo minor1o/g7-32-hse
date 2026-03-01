@@ -16,6 +16,7 @@
   add-pagebreaks,
   body,
 ) = {
+  is-hse.update(false)
   let small-text-difference = (
     default-text-size.default - default-text-size.small
   )
@@ -87,7 +88,7 @@
 
   set page(footer: context {
     if counter(page).get() == (1,) and not hide-title {
-      align(title-footer-align)[#city #year]
+      align(title-footer-align)[*#city #year*]
     } else {
       align(pagination-align)[#counter(page).display()]
     }

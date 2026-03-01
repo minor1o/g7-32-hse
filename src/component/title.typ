@@ -1,14 +1,14 @@
 #import "../utils.typ": fetch-field, unbreak-name
 #import "performers.typ": performers-page
 
-#let detailed-sign-field(title, name, position, year) = {
+#let detailed-sign-field(title, name, position, year, day: none, month: none) = {
   assert(
-    type(name) == str,
-    message: "Некорректный тип поля name в detailed-sign-field, должен быть строкой",
+    type(name) in (str, content),
+    message: "Некорректный тип поля name в detailed-sign-field, должен быть строкой или контентом",
   )
   assert(
-    type(position) == str,
-    message: "Некорректный тип поля position в detailed-sign-field, должен быть строкой",
+    type(position) in (str, content),
+    message: "Некорректный тип поля position в detailed-sign-field, должен быть строкой или контентом",
   )
   assert(
     type(year) in (int, type(none)),
@@ -21,24 +21,41 @@
     line-end = 6
   }
 
+  let day-val = if day != none { [#day] } else { [] }
+  let month-val = if month != none { [#month] } else { [] }
+
   // @typstyle off
-  table(
+  box(width: 85%)[
+  #table(
     stroke: none,
     align: left,
-    inset: (x: 0%),
-    columns: (8pt, 2fr, 2pt, 10pt, 2fr, auto, 45pt),
-    table.cell(colspan: 7)[#upper(title)],
-    table.cell(colspan: 7)[#position],
-    table.cell(colspan: 5)[], table.cell(
-      colspan: 2,
-      align: right,
-    )[#unbreak-name(name)],
-    table.hline(start: 0, end: 5),
-    table.cell(align: right)[«], [], table.cell(
-      align: left,
-    )[»], [], [], [], year-cell,
-    table.hline(start: 1, end: 2), table.hline(start: 4, end: line-end)
+    inset: (x: 0%, y: 2pt),
+    columns: (1fr, auto),
+    table.cell(colspan: 2)[#upper(title)],
+    table.cell(colspan: 2)[#position],
+
+    // Row 3: Signature line and Name
+    table.cell(stroke: (bottom: 0.5pt))[#h(1fr)],
+    table.cell(align: right, inset: (left: 10pt))[#if type(name) == str { unbreak-name(name) } else { name }],
+
+    // Row 5: Date line
+    table.cell(colspan: 2, inset: (top: 5pt))[
+      #table(
+        stroke: none,
+        columns: (12pt, 25pt, 12pt, 5pt, 55pt, 5pt, auto),
+        align: (center, center, center, center, center, center, right),
+        inset: (x: 0pt, y: 2pt),
+        [«],
+        table.cell(stroke: (bottom: 0.5pt))[#day-val],
+        [»],
+        [],
+        table.cell(stroke: (bottom: 0.5pt))[#month-val],
+        [],
+        [#year-cell]
+      )
+    ]
   )
+  ]
 }
 
 #let align-function = align
@@ -105,6 +122,8 @@
       approved-by.name,
       approved-by.position,
       approved-by.year,
+      day: approved-by.at("day", default: none),
+      month: approved-by.at("month", default: none),
     )
   ]
 }
@@ -116,6 +135,8 @@
       agreed-by.name,
       agreed-by.position,
       agreed-by.year,
+      day: agreed-by.at("day", default: none),
+      month: agreed-by.at("month", default: none),
     )
   ]
 }
@@ -124,8 +145,8 @@
   if-present(rule: array.any, approved-by.name, agreed-by.name)[
     #grid(
       columns: (1fr, 1fr),
-      align: (left, right),
-      gutter: 15%,
+      align: (left, left),
+      gutter: 10pt,
       approved-field(approved-by), agreed-field(agreed-by),
     )
   ]
