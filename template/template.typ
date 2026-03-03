@@ -1,4 +1,4 @@
-#import "../../g7-32-hse/src/export.typ": abstract, gost, terms, abbreviations
+#import "../../g7-32-hse/src/export.typ": abbreviations, abstract, gost, terms
 
 #import "../../g7-32-hse/src/component/title-templates.typ": templates
 
@@ -31,18 +31,17 @@
   year: 2026,
 )
 
-#abstract("слово1", "слово2"
-)[
+#abstract("слово1", "слово2")[
   Текст реферата
 ]
 
 #abstract(lang: "en", "keyword1", "keyword2")[
-Referat text
+  Referat text
 ]
 
 #outline()
 
-#include("myterms.typ")
+#include "myterms.typ"
 
 
 

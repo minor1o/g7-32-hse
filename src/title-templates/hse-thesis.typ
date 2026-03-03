@@ -1,5 +1,5 @@
 #import "../component/title.typ": approved-and-agreed-fields, detailed-sign-field, per-line
-#import "../utils.typ": fetch-field, sign-field
+#import "../utils.typ": fetch-field, sign-field, unbreak-name
 #import "../constants.typ": is-hse
 
 #let arguments(..args, year: auto) = {
@@ -97,7 +97,7 @@
     #text(weight: "bold")[#thesis-type] \
     #if thesis-subtype != none [#thesis-subtype \ ]
     на тему: #text(weight: "bold")[#topic] \
-    по направлению подготовки #qualification
+    по направлению подготовки #unbreak-name(qualification)
   ]
 
   v(1fr)
@@ -108,7 +108,7 @@
     detailed-sign-field(
       "ВЫПОЛНИЛ",
       performer.name,
-      [студент группы #performer.group \ образовательной программы \ #qualification],
+      [студент группы #performer.group \ образовательной программы \ #unbreak-name(qualification)],
       if performer.year != none { int(performer.year) } else { none },
       day: performer.at("day", default: none),
       month: performer.at("month", default: none),
