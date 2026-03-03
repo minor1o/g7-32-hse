@@ -9,7 +9,7 @@
   args.insert("program", args.at("program", default: none))
   args.insert("udk", args.at("udk", default: none))
   args.insert("thesis-type", args.at("thesis-type", default: "Выпускная квалификационная работа"))
-  args.insert("thesis-subtype", args.at("thesis-subtype", default: "(академическая)"))
+  args.insert("thesis-subtype", args.at("thesis-subtype", default: none))
   args.insert("topic", args.at("topic", default: none))
   args.insert("qualification", args.at("qualification", default: none))
 
@@ -95,7 +95,7 @@
 
   align(center)[
     #text(weight: "bold")[#thesis-type] \
-    #thesis-subtype \
+    #if thesis-subtype != none [#thesis-subtype \ ]
     на тему: #text(weight: "bold")[#topic] \
     по направлению подготовки #qualification
   ]
