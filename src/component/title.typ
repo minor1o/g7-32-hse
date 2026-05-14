@@ -7,7 +7,7 @@
     message: "Некорректный тип поля name в detailed-sign-field, должен быть строкой или контентом",
   )
   assert(
-    type(position) in (str, content),
+    type(position) in (str, content, type(none)),
     message: "Некорректный тип поля position в detailed-sign-field, должен быть строкой или контентом",
   )
   assert(
@@ -29,10 +29,10 @@
   #table(
     stroke: none,
     align: left,
-    inset: (x: 0%, y: 2pt),
+    inset: (x: 0%, y: 5pt),
     columns: (1fr, auto),
-    table.cell(colspan: 2)[#upper(title)],
-    table.cell(colspan: 2)[#position],
+    table.cell(colspan: 2, align: center)[#title],
+    table.cell(colspan: 2, align: center)[#position],
 
     // Row 3: Signature line and Name
     table.cell(stroke: (bottom: 0.5pt))[#h(1fr)],
@@ -118,7 +118,7 @@
 #let approved-field(approved-by) = {
   if approved-by.name != none [
     #detailed-sign-field(
-      "согласовано",
+      "СОГЛАСОВАНО",
       approved-by.name,
       approved-by.position,
       approved-by.year,
@@ -131,7 +131,7 @@
 #let agreed-field(agreed-by) = {
   if agreed-by.name != none [
     #detailed-sign-field(
-      "утверждаю",
+      "УТВЕРЖДАЮ",
       agreed-by.name,
       agreed-by.position,
       agreed-by.year,
@@ -141,13 +141,28 @@
   ]
 }
 
-#let approved-and-agreed-fields(approved-by, agreed-by) = {
-  if-present(rule: array.any, approved-by.name, agreed-by.name)[
+#let approved-and-agreed-fields(approved-by, agreed-by, co-approved-by: none) = {
+  let co-approved-name = if co-approved-by != none { co-approved-by.at("name", default: none) } else { none }
+  if-present(rule: array.any, approved-by.name, agreed-by.name, co-approved-name)[
     #grid(
       columns: (1fr, 1fr),
       align: (left, left),
       gutter: 10pt,
-      approved-field(approved-by), agreed-field(agreed-by),
+      [
+        #approved-field(approved-by)
+        #if co-approved-name != none [
+          #v(1em)
+          #detailed-sign-field(
+            "",
+            co-approved-name,
+            co-approved-by.position,
+            co-approved-by.year,
+            day: co-approved-by.at("day", default: none),
+            month: co-approved-by.at("month", default: none),
+          )
+        ]
+      ],
+      agreed-field(agreed-by),
     )
   ]
 }

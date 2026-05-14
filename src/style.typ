@@ -30,7 +30,7 @@
 
   set page(margin: margin)
 
-  set text(size: text-size, lang: "ru", hyphenate: false)
+  set text(font: "Times New Roman", size: text-size, lang: "ru", hyphenate: false)
 
   set par(
     justify: default-justify,

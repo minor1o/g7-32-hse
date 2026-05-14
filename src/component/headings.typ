@@ -22,6 +22,7 @@
 
 #let headings(text-size, indent, add-pagebreaks) = body => {
   show heading: set text(size: text-size)
+  show heading.where(level: 3): set text(weight: "regular")
   set heading(numbering: "1.1")
 
   show heading: it => {
@@ -58,7 +59,7 @@
 
 #let abbreviations(body) = {
   structure-heading(structural-heading-titles.abbreviations)
-  context [В настоящем отчете о #if is-hse.get() [ВКР] else [НИР] применяют следующие сокращения и обозначения]
+  context [В настоящем отчете #if is-hse.get() [ВКР] else [НИР] применяют следующие сокращения и обозначения]
 
   set par(first-line-indent: 0pt)
   show std.terms: set std.terms(separator: [ — ], hanging-indent: 0pt, indent: 0pt)
@@ -67,7 +68,7 @@
 
 #let terms(body) = {
   structure-heading(structural-heading-titles.terms)
-  context [В настоящем отчете о #if is-hse.get() [ВКР] else [НИР] применяют следующие термины с соответствующими определениями]
+  context [В настоящем отчете #if is-hse.get() [ВКР] else [НИР] применяют следующие термины с соответствующими определениями]
 
   set par(first-line-indent: 0pt)
   show std.terms: set std.terms(separator: [ — ], hanging-indent: 0pt, indent: 0pt)

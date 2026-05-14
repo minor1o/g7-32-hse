@@ -1,4 +1,4 @@
-#import "../component/title.typ": approved-and-agreed-fields, detailed-sign-field, per-line
+#import "../component/title.typ": agreed-field, detailed-sign-field, per-line
 #import "../utils.typ": fetch-field, sign-field, unbreak-name
 #import "../constants.typ": is-hse
 
@@ -27,6 +27,13 @@
     hint: "утверждения",
   ))
 
+  args.insert("co-approved-by", fetch-field(
+    args.at("co-approved-by", default: none),
+    ("name*", "position*", "year", "day", "month"),
+    default: (year: auto),
+    hint: "согласования (соруководитель)",
+  ))
+
   args.insert("performer", fetch-field(
     args.at("performer", default: (:)),
     ("group*", "name*", "date", "year", "day", "month"),
@@ -36,6 +43,9 @@
 
   if args.approved-by.year == auto {
     args.approved-by.year = year
+  }
+  if args.co-approved-by.year == auto {
+    args.co-approved-by.year = year
   }
   if args.agreed-by.year == auto {
     args.agreed-by.year = year
@@ -58,6 +68,7 @@
   topic: none,
   qualification: none,
   approved-by: (name: none, position: none, year: auto),
+  co-approved-by: (name: none, position: none, year: auto),
   agreed-by: (name: none, position: none, year: auto),
   performer: (group: none, name: none, date: none),
   city: none,
@@ -82,36 +93,71 @@
     #program
   ]
 
-  v(1fr)
+  v(10fr)
 
   if udk != none {
     block(width: 100%, align(left)[УДК #udk])
-    v(0.5cm)
+    v(5pt)
   }
 
-  approved-and-agreed-fields(approved-by, agreed-by)
+  if agreed-by.name != none [
+    #grid(
+      columns: (1fr, 1fr),
+      [], agreed-field(agreed-by),
+    )
+  ]
 
-  v(1fr)
+  v(10fr)
 
   align(center)[
     #text(weight: "bold")[#thesis-type] \
     #if thesis-subtype != none [#thesis-subtype \ ]
-    на тему: #text(weight: "bold")[#topic] \
-    по направлению подготовки #unbreak-name(qualification)
+    на тему 
+    #text(weight: "bold")[#topic] \
+    по направлению подготовки #unbreak-name(qualification) 
+
   ]
-
-  v(1fr)
-
+  
+  v(10fr)
+  
   grid(
     columns: (1fr, 1fr),
-    [],
-    detailed-sign-field(
-      "ВЫПОЛНИЛ",
-      performer.name,
-      [студент группы #performer.group \ образовательной программы \ #unbreak-name(qualification)],
-      if performer.year != none { int(performer.year) } else { none },
-      day: performer.at("day", default: none),
-      month: performer.at("month", default: none),
+    align: top,
+    gutter: 10pt,
+    stack(
+      spacing: 1em,
+      if approved-by.name != none {
+        detailed-sign-field(
+          "Научный руководитель",
+          approved-by.name,
+          if approved-by.position != "Научный руководитель" { approved-by.position } else { none },
+          approved-by.year,
+          day: approved-by.at("day", default: none),
+          month: approved-by.at("month", default: none),
+        )
+      },
+      if co-approved-by.at("name", default: none) != none {
+        detailed-sign-field(
+          "Соруководитель",
+          co-approved-by.name,
+          if co-approved-by.position not in ("Научный соруководитель", "Cоруководитель") {
+            co-approved-by.position
+          } else { none },
+          co-approved-by.year,
+          day: co-approved-by.at("day", default: none),
+          month: co-approved-by.at("month", default: none),
+        )
+      },
+    ),
+    stack(
+      detailed-sign-field(
+        "ВЫПОЛНИЛ",
+        performer.name,
+        [студент группы #performer.group \ образовательной программы \ #unbreak-name(qualification)],
+        if performer.year != none { int(performer.year) } else { none },
+        day: performer.at("day", default: none),
+        month: performer.at("month", default: none),
+      ),
     ),
   )
 
